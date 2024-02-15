@@ -8,21 +8,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(20.0),
       child: Form(
+          key: formKey,
           child: Column(
-        children: [
-          emailField(),
-          passwordField(),
-          Container(
-            margin: const EdgeInsets.only(top: 25.0),
-          ),
-          submitButton(),
-        ],
-      )),
+            children: [
+              emailField(),
+              passwordField(),
+              Container(
+                margin: const EdgeInsets.only(top: 25.0),
+              ),
+              submitButton(),
+            ],
+          )),
     );
   }
 
@@ -30,6 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget emailField() {
     return TextFormField(
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "Please enter your email";
+          } else if (!value.contains('@')) {
+            return "Please enter a valid email";
+          }
+          return null;
+        },
         keyboardType: TextInputType.emailAddress,
         decoration: const InputDecoration(
           labelText: "Email Address",
@@ -39,11 +50,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget passwordField() {
     return TextFormField(
+        validator: (String? value) {
+          if (value == null || value.isEmpty) {
+            return "Please enter your password";
+          } else if (value.length < 4) {
+            return "Password must be at least 4 characters long";
+          }
+          return null;
+        },
         // obscureText: true,
         decoration: const InputDecoration(
-      labelText: 'Password',
-      hintText: 'Password',
-    ));
+          labelText: 'Password',
+          hintText: 'Password',
+        ));
   }
 
   Widget submitButton() {
@@ -58,7 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       ),
-      onPressed: () {},
+      onPressed: () {
+        formKey.currentState?.validate();
+      },
       child: const Text("Login"),
     );
   }
