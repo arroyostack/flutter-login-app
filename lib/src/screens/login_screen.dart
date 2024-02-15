@@ -41,6 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
           }
           return null;
         },
+        onSaved: (String? value) {
+          print(value);
+        },
         keyboardType: TextInputType.emailAddress,
         decoration: const InputDecoration(
           labelText: "Email Address",
@@ -57,6 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
             return "Password must be at least 4 characters long";
           }
           return null;
+        },
+        onSaved: (String? value) {
+          print(value);
         },
         // obscureText: true,
         decoration: const InputDecoration(
@@ -78,7 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       onPressed: () {
-        formKey.currentState?.validate();
+        if (formKey.currentState?.validate() ?? false) {
+          formKey.currentState?.save();
+        }
       },
       child: const Text("Login"),
     );
