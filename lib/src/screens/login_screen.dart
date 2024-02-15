@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "../mixins/validation_mixin.dart";
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -7,8 +8,11 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   final formKey = GlobalKey<FormState>();
+
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget emailField() {
     return TextFormField(
-        validator: (String? value) {
-          if (value == null || value.isEmpty) {
-            return "Please enter your email";
-          } else if (!value.contains('@')) {
-            return "Please enter a valid email";
-          }
-          return null;
-        },
+        validator: validateEmail,
         onSaved: (String? value) {
-          print(value);
+          email = value ?? '';
         },
         keyboardType: TextInputType.emailAddress,
         decoration: const InputDecoration(
@@ -53,16 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget passwordField() {
     return TextFormField(
-        validator: (String? value) {
-          if (value == null || value.isEmpty) {
-            return "Please enter your password";
-          } else if (value.length < 4) {
-            return "Password must be at least 4 characters long";
-          }
-          return null;
-        },
+        validator: validatePassword,
         onSaved: (String? value) {
-          print(value);
+          password = value ?? '';
         },
         // obscureText: true,
         decoration: const InputDecoration(
@@ -86,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () {
         if (formKey.currentState?.validate() ?? false) {
           formKey.currentState?.save();
+          print("Posting ...Email: $email, Password: $password");
         }
       },
       child: const Text("Login"),
